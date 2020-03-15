@@ -23,20 +23,25 @@
 #
 #
 
-SRCS = $(wildcard *.c)
-OBJS = $(SRCS:.c=.o)
+SRCSC = $(wildcard *.c)
+SRCSA = $(wildcard *.S)
+OBJS = $(SRCSC:.c=.o)
+OBJS += $(SRCSA:.S=.o)
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -mcpu=cortex-a53+nosimd -Iinclude
 
 all: clean kernel8.img
 
-start.o: start.S
-	clang --target=aarch64-elf $(CFLAGS) -c start.S -o start.o
+#start.o: start.S
+#	clang --target=aarch64-elf $(CFLAGS) -c start.S -o start.o
+
+%.o: %.S
+	clang --target=aarch64-elf $(CFLAGS) -c $< -o $@
 
 %.o: %.c
 	clang --target=aarch64-elf $(CFLAGS) -c $< -o $@
 
 kernel8.img: start.o $(OBJS)
-	ld.lld -m aarch64elf -nostdlib start.o $(OBJS) -T kernel.ld -o kernel8.elf
+	ld.lld -m aarch64elf -nostdlib $(OBJS) -T kernel.ld -o kernel8.elf
 	llvm-objcopy -O binary kernel8.elf kernel8.img
 
 clean:
