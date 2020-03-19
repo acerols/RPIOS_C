@@ -72,6 +72,13 @@ _start:
     orr     x0, x0, #(1 << 1)   // SWIO hardwired on Pi3
     msr     hcr_el2, x0
     mrs     x0, hcr_el2
+    //  Setup SCTLR access
+    mov     x2, #0x0800
+    movk    x2, #0x30d0, lsl #16        //x2 = 0x30d0 0800
+    msr     sctlr_el1, x2
+    //  Setup exception handlers
+    ldr     x2, =_vectors
+    msr     vbar_el1, x2
     // change execution level to EL1
     mov     x2, #0x3c4
     msr     spsr_el2, x2
@@ -114,3 +121,9 @@ el1_entry:
 4:  bl      main
     // for failsafe, halt this core too
     b       1b
+
+
+    //important, code  has to be properly aligned
+_vectors:
+    // synchronous
+    
