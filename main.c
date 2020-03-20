@@ -37,4 +37,8 @@ void main()
     uart_hex(el);
     uart_puts("\n");
 
+    while(1){
+        uart_send(uart_getc());
+    }
+
 }
