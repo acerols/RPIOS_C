@@ -18,9 +18,15 @@
 #define TIMER_CS_M2	(1 << 2)
 #define TIMER_CS_M3	(1 << 3)
 
+#define IRQ_PENDING_1		(PBASE+0x0000B204)
+#define SYSTEM_TIMER_IRQ_1	(1 << 1)
+
+
 void wait_cycles(unsigned int n);
 void wait_msec(unsigned int n);
 unsigned long get_system_timer();
 void wait_msec_st(unsigned int n);
+void timer_init();
+void handle_timer_ieq();
 
 #endif

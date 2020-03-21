@@ -24,6 +24,7 @@
  */
 
 #include "timer.h"
+#include "uart.h"
 
 #define SYSTMR_LO        TIMER_CLO
 #define SYSTMR_HI        TIMER_CHI
@@ -78,4 +79,21 @@ void wait_msec_st(unsigned int n)
     // we must check if it's non-zero, because qemu does not emulate
     // system timer, and returning constant zero would mean infinite loop
     if(t) while(get_system_timer() < t+n);
+}
+
+const unsigned int interval = 200000;
+unsigned int curVal = 0;
+
+void timer_init()
+{
+	curVal = get32(TIMER_CLO);
+	curVal += interval;
+	put32(TIMER_C1, curVal);
+}
+
+void handle_timer_irq()
+{
+	put32(TIMER_C1, curVal);
+	put32(TIMER_CS, TIMER_CS_M1);
+    uart_puts("call timer handler");
 }

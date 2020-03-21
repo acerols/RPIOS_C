@@ -100,8 +100,15 @@ _vectors:
     mrs     x4, far_el1
     b       exc_handler 
 
+    // IRQ
     .align 7
-    b       el1h_irq
+    //b       el1h_irq
+    mov     x0, #3
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler 
 
     // FIQ
     .align 7
@@ -121,3 +128,5 @@ _vectors:
     mrs     x4, far_el1
     b       exc_handler 
 
+    .align  7
+    mov     x0, x0

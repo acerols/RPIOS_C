@@ -24,6 +24,7 @@
  */
 
 #include "uart.h"
+#include "utils.h"
 
 /**
  * common exception handler
@@ -83,6 +84,10 @@ void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsig
     uart_hex(far>>32);
     uart_hex(far);
     uart_puts("\n");
+#define CORE0_IRQ_SOURCE    0x40000060
+    unsigned int val;
+    val = get32(CORE0_IRQ_SOURCE);
+    uart_hex(val);
     // no return from exception for now
     while(1);
 }
