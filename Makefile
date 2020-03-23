@@ -42,7 +42,7 @@ all: clean kernel8.img
 
 kernel8.img: start.o $(OBJS)
 	ld.lld -m aarch64elf -nostdlib $(OBJS) -T kernel.ld -o kernel8.elf
-	llvm-objcopy -O binary kernel8.elf kernel8.img
+	llvm-objcopy-10 -O binary kernel8.elf kernel8.img
 
 clean:
 	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
