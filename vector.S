@@ -65,7 +65,7 @@ _vectors:
 
     // IRQ
     .align 7
-    mov     x0, #1
+    mov     x0, #0x11
     mrs     x1, esr_el1
     mrs     x2, elr_el1
     mrs     x3, spsr_el1

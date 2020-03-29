@@ -31,6 +31,7 @@
  */
 void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsigned long spsr, unsigned long far)
 {
+    disable_irq();
     // print out interruption type
     switch(type) {
         case 0: uart_puts("Synchronous"); break;
@@ -89,5 +90,12 @@ void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsig
     val = get32(CORE0_IRQ_SOURCE);
     uart_hex(val);
     // no return from exception for now
-    while(1);
+    if(val & 0x08){
+        
+        enable_irq();
+        return;
+    }
+    else{
+        while(1);
+    }
 }
