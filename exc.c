@@ -32,6 +32,8 @@
 void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsigned long spsr, unsigned long far)
 {
     // print out interruption type
+    uart_puts("\n");
+    uart_hex(type);
     switch(type) {
         case 0: uart_puts("Synchronous"); break;
         case 1: uart_puts("IRQ"); break;
