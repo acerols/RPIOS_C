@@ -43,6 +43,8 @@ _start:
     ldr     x1, =_start
 
     // set up EL1
+    mov     x0, #0x1
+    msr     SPSel, x0
     mrs     x0, CurrentEL
     and     x0, x0, #12 // clear reserved bits
 

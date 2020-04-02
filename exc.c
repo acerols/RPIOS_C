@@ -25,6 +25,7 @@
 
 #include "uart.h"
 #include "utils.h"
+#include "typedef.h"
 
 /**
  * common exception handler
@@ -32,6 +33,12 @@
 void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsigned long spsr, unsigned long far)
 {
     disable_irq();
+    uart_puts("\n type : ");
+    uart_hex(type);
+    uint32_t el = get_el();
+    uart_puts("; el : ");
+    uart_hex(el);
+    uart_puts(";\n");
     // print out interruption type
     uart_puts("\n");
     uart_hex(type);
@@ -41,7 +48,6 @@ void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsig
         case 2: uart_puts("FIQ"); break;
         case 3: uart_puts("SError"); break;
     }
-    uart_puts(": ");
     // decode exception type (some, not all. See ARM DDI0487B_b chapter D10.2.28)
     switch(esr>>26) {
         case 0b000000: uart_puts("Unknown"); break;
@@ -89,12 +95,22 @@ void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsig
     uart_puts("\n");
 #define CORE0_IRQ_SOURCE    0x40000060
     unsigned int val;
+    uint32_t cntvct;
     val = get32(CORE0_IRQ_SOURCE);
     uart_hex(val);
     // no return from exception for now
     if(val & 0x08){
-        
-        enable_irq();
+        uart_puts("Context switch!\n");
+        uart_puts("handler CNTV_TVAL : ");
+        val = read_cntv_tval();
+        uart_hex(val);
+        extern uint32_t cntfrq;
+        write_cntv_tval(cntfrq);
+        uart_puts("handler CNTVCT: ");
+        cntvct = read_cntvct();
+        uart_hex(cntvct);
+        uart_puts("\n");
+        //enable_irq();
         return;
     }
     else{

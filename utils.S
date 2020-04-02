@@ -5,6 +5,11 @@ get_el:
 	lsr x0, x0, #2
 	ret
 
+.globl get_spsl
+get_spsl:
+	mrs x0, SPSel
+	ret
+
 .globl put32
 put32:
 	str w1,[x0]
