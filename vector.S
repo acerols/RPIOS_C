@@ -103,7 +103,7 @@ _vectors:
     // IRQ
     .align 7
     //b       el1h_irq
-    mov     x0, #3
+    mov     x0, #0x21
     mrs     x1, esr_el1
     mrs     x2, elr_el1
     mrs     x3, spsr_el1

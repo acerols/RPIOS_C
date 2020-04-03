@@ -81,3 +81,10 @@ uint32_t read_cntfrq(void)
 	asm volatile ("mrs %0, cntfrq_el0" : "=r" (val));
     return val;
 }
+
+void set_spsel(void)
+{
+    uint32_t val = 1;
+    asm volatile("msr SPSel, %0" :: "r" (val));
+    return;
+}

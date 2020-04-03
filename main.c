@@ -37,10 +37,20 @@ void main()
     // set up serial console
     uint32_t val;
 
-    uart_puts("CNTFRQ  : ");
+    uint32_t el = get_el();
+    set_spsel();
+    uint32_t SPSel = get_spsl();
+    uart_hex(el);
+    uart_puts(" : ");
+    uart_hex(SPSel);
+    uart_puts("\n");
+
+    /*
+    uart_puts("\nCNTFRQ  : ");
     cntfrq = read_cntfrq();
     uart_hex(cntfrq);
 
+    
     write_cntv_tval(cntfrq);    // clear cntv interrupt and set next 1 sec timer.
     uart_puts("CNTV_TVAL: ");
     val = read_cntv_tval();
@@ -48,6 +58,7 @@ void main()
  
     routing_core0cntv_to_core0irq();
     enable_cntv(); 
+    */
     enable_irq();
 
     /*
