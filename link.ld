@@ -23,28 +23,22 @@
  *
  */
 
-#ifndef _UART_H
-#define _UART_H
+SECTIONS
+{
+    . = 0x80000;
+    .text : { KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*) }
+    .rodata : { *(.rodata .rodata.* .gnu.linkonce.r*) }
+    PROVIDE(_data = .);
+    .data : { *(.data .data.* .gnu.linkonce.d*) }
+    .bss (NOLOAD) : {
+        . = ALIGN(16);
+        __bss_start = .;
+        *(.bss .bss.*)
+        *(COMMON)
+        __bss_end = .;
+    }
+    _end = .;
 
-#include "gpio.h"
-
-/* PL011 UART registers */
-#define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
-#define UART0_FR        ((volatile unsigned int*)(MMIO_BASE+0x00201018))
-#define UART0_IBRD      ((volatile unsigned int*)(MMIO_BASE+0x00201024))
-#define UART0_FBRD      ((volatile unsigned int*)(MMIO_BASE+0x00201028))
-#define UART0_LCRH      ((volatile unsigned int*)(MMIO_BASE+0x0020102C))
-#define UART0_CR        ((volatile unsigned int*)(MMIO_BASE+0x00201030))
-#define UART0_IMSC      ((volatile unsigned int*)(MMIO_BASE+0x00201038))
-#define UART0_MIS       ((volatile unsigned int*)(MMIO_BASE+0x00201040))
-#define UART0_ICR       ((volatile unsigned int*)(MMIO_BASE+0x00201044))
-
-
-
-void uart_init();
-void uart_send(unsigned int c);
-char uart_getc();
-void uart_puts(char *s);
-void uart_hex(unsigned int d);
-
-#endif
+   /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
+}
+__bss_size = (__bss_end - __bss_start)>>3;

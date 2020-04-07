@@ -23,9 +23,7 @@
  *
  */
 
-#include "arm/sysregs.h"
-
-.section .text.boot
+.section ".text.boot"
 
 .global _start
 
@@ -60,7 +58,7 @@ _start:
 
     // running at EL2?
 5:  cmp     x0, #4
-    beq     6f
+    beq     5f
     msr     sp_el1, x1
     // enable CNTP for EL1
     mrs     x0, cnthctl_el2
@@ -72,36 +70,22 @@ _start:
     orr     x0, x0, #(1 << 1)   // SWIO hardwired on Pi3
     msr     hcr_el2, x0
     mrs     x0, hcr_el2
+    // Setup SCTLR access
+    mov     x2, #0x0800
+    movk    x2, #0x30d0, lsl #16
+    msr     sctlr_el1, x2
+    // set up exception handlers
+    ldr     x2, =_vectors
+    msr     vbar_el1, x2
     // change execution level to EL1
     mov     x2, #0x3c4
     msr     spsr_el2, x2
-    adr     x2, 6f
+    adr     x2, 5f
     msr     elr_el2, x2
     eret
 
-6:
-    mov     sp, x1
+5:  mov     sp, x1
 
-master:
-/*
-    ldr     x0, =SCTLR_VALUE_MMU_DISABLED
-    msr     sctlr_el1, x0
-
-    ldr     x0, =HCR_VALUE
-    msr     hcr_el2, x0
-
-    ldr     x0, =SCR_VALUE
-    msr     scr_el3, x0
-
-    ldr     x0, =SPSR_VALUE
-    msr     spsr_el3, x0
-
-    adr     x0, el1_entry
-    msr     elr_el3, x0
-
-    eret
-*/
-el1_entry:
     // clear bss
     ldr     x1, =__bss_start
     ldr     w2, =__bss_size
