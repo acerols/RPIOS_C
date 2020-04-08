@@ -28,6 +28,7 @@ SRCSA = $(wildcard *.S)
 OBJS = $(SRCS:.c=.o)
 OBJS += $(SRCSA:.S=.o) 
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -mcpu=cortex-a53+nosimd -I./include
+OBJCOPY = llvm-objcopy
 
 all: clean kernel8.img
 
@@ -39,7 +40,8 @@ all: clean kernel8.img
 
 kernel8.img: $(OBJS)
 	ld.lld -m aarch64elf -nostdlib $(OBJS) -T link.ld -o kernel8.elf
-	llvm-objcopy -O binary kernel8.elf kernel8.img
+	$(OBJCOPY) -O binary kernel8.elf kernel8.img
+
 
 clean:
 	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
