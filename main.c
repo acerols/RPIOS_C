@@ -29,33 +29,11 @@
 #include "typedef.h"
 #include "printf.h"
 
-#define IRQ_BASIC   ((volatile uint32_t *)(0x3F00B200))
-#define IRQ_PEND2   ((volatile uint32_t *)(0x3F00B208))
-#define IRQ_ENABLE2 ((volatile uint32_t *)(0x3F00B214))
-#define GPU_INTERRUPTS_ROUTING ((volatile uint32_t *)(0x4000000C))
-#define CORE0_INTERRUPT_SOURCE ((volatile uint32_t *)(0x40000060))
-
 void main()
 {
     // set up serial console and random number generator
     uart_init();
     rand_init();
-    
-    // enable UART RX interrupt.
-    
-    *UART0_IMSC = 1 << 4;
-
-    // UART interrupt routing.
-    *IRQ_ENABLE2 = 1 << 25;
-
-    // IRQ routeing to CORE0.
-    *GPU_INTERRUPTS_ROUTING = 0x00;
-
-    /*
-    uart_puts("Here goes a random number: ");
-    uart_hex(rand(0,4294967295));
-    uart_puts("\n");
-    */
 
     printf("printf\n");
 
