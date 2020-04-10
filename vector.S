@@ -1,4 +1,4 @@
-#define S_FRAME_SIZE        256
+#include "vector.h"
 
 .macro handle_invalid_entry type
 	kernel_entry
@@ -55,6 +55,12 @@
 	eret
 	.endm
 
+
+.globl ret_from_fork
+ret_from_fork:
+	bl	schedule_tail
+	mov	x0, x20
+	blr	x19 		//should never return
 
 .globl _vectors
 
@@ -130,5 +136,3 @@ _vectors:
     b       exc_handler
 
 
-exc_handler:
-    ret
