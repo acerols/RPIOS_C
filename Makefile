@@ -42,6 +42,8 @@ kernel8.img: $(OBJS)
 	ld.lld -m aarch64elf -nostdlib $(OBJS) -T link.ld -o kernel8.elf
 	$(OBJCOPY) -O binary kernel8.elf kernel8.img
 
+win:
+	@make OBJCOPY=llvm-objcopy-10
 
 clean:
 	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
