@@ -1,6 +1,7 @@
 #include "uart.h"
 #include "exec.h"
 #include "timer.h"
+#include "handler.h"
 
 void handle_irq(void)
 {
@@ -11,9 +12,7 @@ void handle_irq(void)
         if (*IRQ_BASIC & (1 << 9)) {
             if (*IRQ_PEND2 & (1 << 25)) {
                 if (*UART0_MIS & (1 << 4)) {
-                    c = (unsigned char) *UART0_DR; // read for clear tx interrupt.
-                    uart_send(c);
-                    uart_puts(" c_irq_handler\n");
+                    handler_uart_irq();
                     return;
                 }
             }
@@ -21,13 +20,14 @@ void handle_irq(void)
     }
 
     if (read_core0timer_pending() & 0x08 ) {
-        set_timer();
-        uart_puts(" timer_handler\n");
+        handler_timer_irq();
     }
 
     enable_irq();
     return;
 }
+
+
 
 void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsigned long spsr, unsigned long far)
 {

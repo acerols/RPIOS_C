@@ -29,17 +29,17 @@ OBJS = $(SRCS:.c=.o)
 OBJS += $(SRCSA:.S=.o) 
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -mcpu=cortex-a53+nosimd -I./include
 OBJCOPY = llvm-objcopy
-
+OBJSDIR = ./objs/
 all: clean kernel8.img
 
 %.o: %.S
-	clang --target=aarch64-elf $(CFLAGS) -c $< -o $@
+	clang --target=aarch64-elf $(CFLAGS) -c $< -o $(OBJSDIR)$@
 
 %.o: %.c
-	clang --target=aarch64-elf $(CFLAGS) -c $< -o $@
+	clang --target=aarch64-elf $(CFLAGS) -c $< -o $(OBJSDIR)$@
 
 kernel8.img: $(OBJS)
-	ld.lld -m aarch64elf -nostdlib $(OBJS) -T link.ld -o kernel8.elf
+	ld.lld -m aarch64elf -nostdlib $(OBJSDIR)*.o -T link.ld -o kernel8.elf
 	$(OBJCOPY) -O binary kernel8.elf kernel8.img
 
 win:
@@ -50,6 +50,9 @@ clean:
 
 run:
 	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio
+
+runout:
+	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial pty
 
 runasm:
 	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio -d in_asm
