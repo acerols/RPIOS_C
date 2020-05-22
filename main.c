@@ -3,6 +3,7 @@
 #include "timer.h"
 #include "typedef.h"
 #include "printf.h"
+#include "sched.h"
 
 void process(char *array)
 {
@@ -27,6 +28,9 @@ void main()
 
     int response = copy_process((unsigned long)&process, (unsigned long)"123456");
     printf("%d %10x\n", response, &process);
+    response = copy_process((unsigned long)&process, (unsigned long)"67890");
+    printf("%d %10x\n", response, &process);
+
 
     register_dump(reg);
 
@@ -35,7 +39,7 @@ void main()
 
     // echo everything back
     while(1) {
-        uart_send(uart_getc());
+        //schedule();
     }
 }
 

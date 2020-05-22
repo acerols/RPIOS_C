@@ -39,7 +39,7 @@ all: clean kernel8.img
 	clang --target=aarch64-elf $(CFLAGS) -c $< -o $(OBJSDIR)$@
 
 kernel8.img: $(OBJS)
-	ld.lld -m aarch64elf -nostdlib $(OBJSDIR)*.o -T link.ld -o kernel8.elf
+	ld.lld -m aarch64elf -nostdlib  $(OBJSDIR)*.o -T link.ld -o kernel8.elf
 	$(OBJCOPY) -O binary kernel8.elf kernel8.img
 
 win:

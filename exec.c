@@ -2,12 +2,12 @@
 #include "exec.h"
 #include "timer.h"
 #include "handler.h"
-
+#include "printf.h"
 void handle_irq(void)
 {
     char c;
     // check inteerupt source
-    disable_irq();
+    //disable_irq();
     if (*CORE0_INTERRUPT_SOURCE & (1 << 8)) {
         if (*IRQ_BASIC & (1 << 9)) {
             if (*IRQ_PEND2 & (1 << 25)) {
@@ -22,6 +22,8 @@ void handle_irq(void)
     if (read_core0timer_pending() & 0x08 ) {
         handler_timer_irq();
     }
+
+    printf("end_exception\n");
 
     enable_irq();
     return;
@@ -85,5 +87,5 @@ void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsig
     uart_hex(far);
     uart_puts("\n");
     // no return from exception for now
-    while(1);
+    //while(1);
 }

@@ -2,6 +2,7 @@
 #include "typedef.h"
 #include "uart.h"
 #include "timer.h"
+#include "sched.h"
 
 void handler_uart_irq()
 {
@@ -14,4 +15,5 @@ void handler_timer_irq()
 {
     set_timer();
     uart_puts("timer_handler\n");
+    timer_tick();
 }
