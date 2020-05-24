@@ -3,11 +3,27 @@
 #include "timer.h"
 #include "handler.h"
 #include "printf.h"
+
+void aaa(void)
+{
+    disable_irq();
+    printf("aaa\n");
+    enable_irq();
+    while(1);
+}
+
+uint32_t *get_elr(void)
+{
+    uint32_t val;
+	asm volatile ("mrs %0, elr_el1" : "=r" (val));
+    return val;
+}
+
 void handle_irq(void)
 {
     char c;
     // check inteerupt source
-    //disable_irq();
+    disable_irq();
     if (*CORE0_INTERRUPT_SOURCE & (1 << 8)) {
         if (*IRQ_BASIC & (1 << 9)) {
             if (*IRQ_PEND2 & (1 << 25)) {
@@ -20,12 +36,19 @@ void handle_irq(void)
     }
 
     if (read_core0timer_pending() & 0x08 ) {
+        
+        set_elr(&aaa);
+        printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);
         handler_timer_irq();
     }
 
+    else{
+        local_timer_clr_reload_reg_t temp = { .IntClear = 1, .Reload = 1 };
+	    QA7->TimerClearReload  = temp;	
+    }
     printf("end_exception\n");
 
-    enable_irq();
+    //enable_irq();
     return;
 }
 
@@ -87,5 +110,5 @@ void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsig
     uart_hex(far);
     uart_puts("\n");
     // no return from exception for now
-    //while(1);
+    while(1);
 }

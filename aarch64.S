@@ -36,3 +36,8 @@ memzero:
 	subs x1, x1, #8
 	b.gt memzero
 	ret
+
+.global	set_elr
+set_elr:
+	msr elr_el1, x0
+	ret

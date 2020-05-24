@@ -15,5 +15,5 @@ void handler_timer_irq()
 {
     set_timer();
     uart_puts("timer_handler\n");
-    timer_tick();
+    //timer_tick();
 }
