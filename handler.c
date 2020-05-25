@@ -14,6 +14,14 @@ void handler_uart_irq()
 void handler_timer_irq()
 {
     set_timer();
-    uart_puts("timer_handler\n");
+    printf("timer_irq : not local\n");
     //timer_tick();
+}
+
+void handler_localtimer_irq()
+{
+    local_timer_clr_reload_reg_t temp = { .IntClear = 1, .Reload = 1 };
+	QA7->TimerClearReload  = temp;
+
+    
 }

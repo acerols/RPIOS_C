@@ -1,6 +1,5 @@
 #include "uart.h"
 #include "exec.h"
-#include "timer.h"
 #include "handler.h"
 #include "printf.h"
 
@@ -36,22 +35,28 @@ void handle_irq(void)
     }
 
     if (read_core0timer_pending() & 0x08 ) {
-        
-        set_elr(&aaa);
-        printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);
         handler_timer_irq();
     }
 
     else{
-        local_timer_clr_reload_reg_t temp = { .IntClear = 1, .Reload = 1 };
-	    QA7->TimerClearReload  = temp;	
+        handler_localtimer_irq();
+        set_elr(&aaa);
+        //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);
     }
     printf("end_exception\n");
 
     //enable_irq();
     return;
 }
-
+	uint64_t x0;
+	uint64_t x1;
+	uint64_t x2;
+	uint64_t x3;
+	uint64_t x4;
+	uint64_t x5;
+	uint64_t x6;
+	uint64_t x7;
+	uint64_t x8;
 
 
 void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsigned long spsr, unsigned long far)
