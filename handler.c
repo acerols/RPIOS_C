@@ -3,6 +3,7 @@
 #include "uart.h"
 #include "timer.h"
 #include "sched.h"
+#include "localtimer.h"
 
 void handler_uart_irq()
 {
@@ -20,8 +21,6 @@ void handler_timer_irq()
 
 void handler_localtimer_irq()
 {
-    local_timer_clr_reload_reg_t temp = { .IntClear = 1, .Reload = 1 };
-	QA7->TimerClearReload  = temp;
-
-    
+    set_localtimer();
+    printf("timer_irq : local\n");
 }

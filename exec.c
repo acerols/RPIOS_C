@@ -23,9 +23,9 @@ void handle_irq(void)
     char c;
     // check inteerupt source
     disable_irq();
-    if (*CORE0_INTERRUPT_SOURCE & (1 << 8)) {
-        if (*IRQ_BASIC & (1 << 9)) {
-            if (*IRQ_PEND2 & (1 << 25)) {
+    if (*CORE0_INTERRUPT_SOURCE & (1 << 8)) {       //GPU interrupt
+        if (*IRQ_BASIC & (1 << 9)) {                //IRQ2 is pending
+            if (*IRQ_PEND2 & (1 << 25)) {           //UART is pending
                 if (*UART0_MIS & (1 << 4)) {
                     handler_uart_irq();
                     return;
@@ -33,17 +33,23 @@ void handle_irq(void)
             }
         }
     }
-
-    if (read_core0timer_pending() & 0x08 ) {
-        handler_timer_irq();
+    else if(*CORE0_INTERRUPT_SOURCE & (1 << 11)){
+        handler_localtimer_irq();
+        set_elr(&aaa);
+        //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);   
     }
-
+    
+    if (read_core0timer_pending() & 0x08 ) {
+            handler_timer_irq();
+    }
+    /*
     else{
         handler_localtimer_irq();
         set_elr(&aaa);
         //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);
     }
-    printf("end_exception\n");
+    */
+    //printf("end_exception\n");
 
     //enable_irq();
     return;
