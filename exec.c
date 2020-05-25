@@ -33,15 +33,17 @@ void handle_irq(void)
             }
         }
     }
+    
     else if(*CORE0_INTERRUPT_SOURCE & (1 << 11)){
         handler_localtimer_irq();
         set_elr(&aaa);
         //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);   
     }
-    
-    if (read_core0timer_pending() & 0x08 ) {
-            handler_timer_irq();
+
+    else if(*CORE0_INTERRUPT_SOURCE & (1 << 3)){
+        handler_timer_irq();
     }
+
     /*
     else{
         handler_localtimer_irq();
