@@ -79,8 +79,10 @@ _vectors:
 
     // IRQ
     .align  7
+    bl      register_dump
     kernel_entry
     bl      handle_irq
+    bl      register_dump
     kernel_exit
 
     // FIQ

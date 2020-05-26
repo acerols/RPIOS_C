@@ -1,6 +1,8 @@
 #include "typedef.h"
 
-void register_dump(uint64_t reg[])
+extern uint64_t reg[32];
+
+void register_dump()
 {
     uint64_t temp;
     asm volatile("mov %0, x0" : "=r" (temp));
@@ -66,6 +68,9 @@ void register_dump(uint64_t reg[])
     asm volatile("mov %0, x31" : "=r" (temp));
     reg[31] = temp;
     
+    for(int i = 0; i+1 < 32; i+=2)
+        printf("x%d : %8x | x%d : %8x \n", i, reg[i], i+1, reg[i+1]);
+
     return;
 }
 

@@ -58,4 +58,4 @@ runasm:
 	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio -d in_asm
 
 dump:
-	llvm-objdump -d kernel8.img
+	llvm-objdump -d kernel8.elf
