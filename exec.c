@@ -40,7 +40,6 @@ void handle_irq(void)
 
     else{
         handler_localtimer_irq();
-        set_elr(&aaa);
         //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);
     }
     printf("end_exception\n");

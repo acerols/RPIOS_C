@@ -76,7 +76,7 @@ void set_timer(void)
 
 void init_timer(uint32_t usec)
 {
-    uint32_t timer;
+    //uint32_t timer;
     cntfrq = read_cntfrq();
     //timer = cntfrq / 1e6;
     //timer *= usec;

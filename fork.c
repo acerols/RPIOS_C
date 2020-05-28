@@ -3,6 +3,8 @@
 #include "vector.h"
 #include "printf.h"
 
+extern uint64_t nr_tasks;
+
 int copy_process(unsigned long fn, unsigned long arg)
 {
 	preempt_disable();

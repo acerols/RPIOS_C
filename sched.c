@@ -5,7 +5,10 @@
 static struct task_struct init_task = INIT_TASK;
 struct task_struct *current = &(init_task);
 struct task_struct * task[NR_TASKS] = {&(init_task), };
-int nr_tasks = 1;
+uint64_t nr_tasks = 0;
+uint64_t Now_task = 0;
+
+struct cpu_context context_temp[1];
 
 void preempt_disable(void)
 {
@@ -17,6 +20,10 @@ void preempt_enable(void)
 	current->preempt_count--;
 }
 
+uint64_t get_task_num()
+{
+	return nr_tasks;
+}
 
 void _schedule(void)
 {
@@ -47,10 +54,24 @@ void _schedule(void)
 	preempt_enable();
 }
 
-void schedule(void)
+void sched()
 {
-	current->counter = 0;
-	_schedule();
+	struct task_struct *prev = task[Now_task];
+	if(nr_tasks == 1){
+		prev = task[0];
+		struct task_strcut *next = task[0];
+		cpu_switch_to(prev, next);
+	}
+	if(Now_task < (nr_tasks -1)){
+		Now_task++;
+	}
+	else{
+		Now_task = 0;
+	}
+	struct task_struct *next = task[Now_task];
+	printf("No : %d\nTask : %d\n", Now_task, nr_tasks);
+	cpu_switch_to(prev, next);
+	return;
 }
 
 void switch_to(struct task_struct *next) 
@@ -79,3 +100,4 @@ void timer_tick()
 	_schedule();
 	disable_irq();
 }
+

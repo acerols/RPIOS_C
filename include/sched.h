@@ -18,7 +18,7 @@
 
 extern struct task_struct *current;
 extern struct task_struct * task[NR_TASKS];
-extern int nr_tasks;
+extern uint64_t nr_tasks;
 
 struct cpu_context {
 	uint64_t x19;
@@ -51,6 +51,8 @@ extern void preempt_disable(void);
 extern void preempt_enable(void);
 extern void switch_to(struct task_struct* next);
 extern void cpu_switch_to(struct task_struct* prev, struct task_struct* next);
+extern void sched();
+extern uint64_t get_task_num();
 
 #define INIT_TASK \
 /*cpu_context*/	{ {0,0,0,0,0,0,0,0,0,0,0,0,0}, \

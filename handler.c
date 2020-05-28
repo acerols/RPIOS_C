@@ -22,6 +22,5 @@ void handler_localtimer_irq()
 {
     local_timer_clr_reload_reg_t temp = { .IntClear = 1, .Reload = 1 };
 	QA7->TimerClearReload  = temp;
-
-    
+    set_elr(&sched);
 }
