@@ -42,8 +42,7 @@ void handle_irq(void)
         handler_localtimer_irq();
         //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);
     }
-    printf("end_exception\n");
-
+    
     //enable_irq();
     return;
 }

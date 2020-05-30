@@ -1,10 +1,7 @@
-#ifndef _TIMER_H
-#define _TIMER_H
+#ifndef __LOCALTIMER_H__
+#define __LOCALTIMER_H__
 
 #include "typedef.h"
-
-#define CORE0_TIMER_IRQCNTL ((volatile uint32_t *)(0x40000040))
-#define CORE0_IRQ_SOURCE    CORE0_INTERRUPT_SOURCE
 
 /*--------------------------------------------------------------------------}
 {    LOCAL TIMER INTERRUPT ROUTING REGISTER - QA7_rev3.4.pdf page 18		}
@@ -94,8 +91,6 @@ struct __attribute__((__packed__, aligned(4))) QA7Registers {
 
 #define QA7 ((volatile __attribute__((aligned(4))) struct QA7Registers*)(uint32_t *)(0x40000024))
 
-void init_timer(uint32_t usec);
-void set_timer();
 void init_localtimer();
 void set_localtimer();
 
