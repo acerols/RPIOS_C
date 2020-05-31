@@ -34,28 +34,17 @@ void handle_irq(void)
         }
     }
 
-    if (read_core0timer_pending() & 0x08 ) {
-        handler_timer_irq();
+    else if(*CORE0_INTERRUPT_SOURCE & (1 << 11)){
+        handler_localtimer_irq();
+        //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);   
     }
 
-    else{
-        handler_localtimer_irq();
-        //printf("timer elr : %10x\naaaaddress = :%10x\n", get_elr(), &aaa);
+    else if(*CORE0_INTERRUPT_SOURCE & (1 << 3)){
+        handler_timer_irq();
     }
-    
     //enable_irq();
     return;
 }
-	uint64_t x0;
-	uint64_t x1;
-	uint64_t x2;
-	uint64_t x3;
-	uint64_t x4;
-	uint64_t x5;
-	uint64_t x6;
-	uint64_t x7;
-	uint64_t x8;
-
 
 void exc_handler(unsigned long type, unsigned long esr, unsigned long elr, unsigned long spsr, unsigned long far)
 {
