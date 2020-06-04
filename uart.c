@@ -65,6 +65,17 @@ void uart_init()
     *UART0_FBRD = 0xB;
     *UART0_LCRH = 0b11<<5; // 8n1
     *UART0_CR = 0x301;     // enable Tx, Rx, FIFO
+
+        // enable UART RX interrupt.
+    *UART0_IMSC = 1 << 4;
+
+    // UART interrupt routing.
+    *IRQ_ENABLE2 = 1 << 25;
+
+    // IRQ routeing to CORE0.
+    *GPU_INTERRUPTS_ROUTING = 0x00;
+
+
 }
 
 /**
