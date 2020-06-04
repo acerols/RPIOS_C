@@ -1,51 +1,33 @@
-#
-# Copyright (C) 2018 bzt (bztsrc@github)
-#
-# Permission is hereby granted, free of charge, to any person
-# obtaining a copy of this software and associated documentation
-# files (the "Software"), to deal in the Software without
-# restriction, including without limitation the rights to use, copy,
-# modify, merge, publish, distribute, sublicense, and/or sell copies
-# of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
-#
-#
-
+CROSS = aarch64-linux-gnu
+CC = ${CROSS}-gcc
+AS = ${CROSS}-as
+OBJDUMP = ${CROSS}-objdump
+CFLAGS =  -mcpu=cortex-a53 -fpic -ffreestanding -std=gnu99 -O2 -Wall -Wextra -Iinclude/
+ASM_FLAGS = -mcpu=cortex-a53 -Iinclude/
 SRCS = $(wildcard *.c)
 SRCSA = $(wildcard *.S)
-OBJS = $(SRCS:.c=.o)
-OBJS += $(SRCSA:.S=.o) 
-CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -mcpu=cortex-a53+nosimd -I./include
+OBJ = $(SRCS:.c=.o)
+OBJ += $(SRCSA:.S=.o) 
 
-all: clean kernel8.img
+kernel.elf: ${OBJ}
+	${CC} -Wl,--build-id=none -T link.ld -o $@ -ffreestanding -O2 -nostdlib ${OBJ}
+	${OBJDUMP} -D kernel.elf > kernel.list
 
 %.o: %.S
-	clang --target=aarch64-elf $(CFLAGS) -c $< -o $@
+	${AS} ${ASM_FLAGS} -c $< -o $@
 
-%.o: %.c
-	clang --target=aarch64-elf $(CFLAGS) -c $< -o $@
+%.o : %.c Makefile
+	$(CC) ${CFLAGS} -c -o $*.o $*.c
 
-kernel8.img: $(OBJS)
-	ld.lld -m aarch64elf -nostdlib $(OBJS) -T link.ld -o kernel8.elf
-	llvm-objcopy -O binary kernel8.elf kernel8.img
+run :
+	$(MAKE) kernel.elf
+	qemu-system-aarch64 -M raspi3 -m 128 -serial mon:stdio -nographic -kernel kernel.elf
+
+runasm :
+	$(MAKE) kernel.elf
+	qemu-system-aarch64 -M raspi3 -m 128 -serial mon:stdio -nographic -kernel kernel.elf -d in_asm
 
 clean:
-	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
+	rm -f *.o *.elf *.list
 
-run:
-	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio
-
-runasm:
-	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio -d in_asm
+.PHONY: clean

@@ -59,76 +59,86 @@
 .globl _vectors
 
    // important, code has to be properly aligned
-    .align 11
+.balign 2048
 _vectors:
-    // synchronous
-    .align  7
-    mov     x0, #0
-    mrs     x1, esr_el1
-    mrs     x2, elr_el1
-    mrs     x3, spsr_el1
-    mrs     x4, far_el1
-    b       exc_handler
+.balign 128
+    b hang
+.balign 128
+    stp   x0,  x1,  [sp, #-16]!
+    stp   x2,  x3,  [sp, #-16]!
+    stp   x4,  x5,  [sp, #-16]!
+    stp   x6,  x7,  [sp, #-16]!
+    stp   x8,  x9,  [sp, #-16]!
+    stp   x10, x11, [sp, #-16]!
+    stp   x12, x13, [sp, #-16]!
+    stp   x14, x15, [sp, #-16]!
+    stp   x16, x17, [sp, #-16]!
+    stp   x18, x19, [sp, #-16]!
+    // call c handler.
+    //bl    c_irq_handler
+    
+    ldp   x18, x19, [sp], #16
+    ldp   x16, x17, [sp], #16
+    ldp   x14, x15, [sp], #16
+    ldp   x12, x13, [sp], #16
+    ldp   x10, x11, [sp], #16
+    ldp   x8,  x9,  [sp], #16
+    ldp   x6,  x7,  [sp], #16
+    ldp   x4,  x5,  [sp], #16
+    ldp   x2,  x3,  [sp], #16
+    ldp   x0,  x1,  [sp], #16
     eret
-
-    // IRQ
-    .align  7
-    kernel_entry
-    bl      handle_irq
-    kernel_exit
-
-    // FIQ
-    .align  7
-    mov     x0, #2
-    mrs     x1, esr_el1
-    mrs     x2, elr_el1
-    mrs     x3, spsr_el1
-    mrs     x4, far_el1
-    b       exc_handler
-
-    // SError
-    .align  7
-    mov     x0, #3
-    mrs     x1, esr_el1
-    mrs     x2, elr_el1
-    mrs     x3, spsr_el1
-    mrs     x4, far_el1
-    b       exc_handler
-
-    // synchronous
-    .align  7
-    mov     x0, #0
-    mrs     x1, esr_el1
-    mrs     x2, elr_el1
-    mrs     x3, spsr_el1
-    mrs     x4, far_el1
-    b       exc_handler
+.balign 128
+    b hang
+.balign 128
+    b hang
+.balign 128
+    b hang
+.balign 128
+    stp   x0,  x1,  [sp, #-16]!
+    stp   x2,  x3,  [sp, #-16]!
+    stp   x4,  x5,  [sp, #-16]!
+    stp   x6,  x7,  [sp, #-16]!
+    stp   x8,  x9,  [sp, #-16]!
+    stp   x10, x11, [sp, #-16]!
+    stp   x12, x13, [sp, #-16]!
+    stp   x14, x15, [sp, #-16]!
+    stp   x16, x17, [sp, #-16]!
+    stp   x18, x19, [sp, #-16]!
+    // call c handler.
+    bl    handle_irq
+    
+    ldp   x18, x19, [sp], #16
+    ldp   x16, x17, [sp], #16
+    ldp   x14, x15, [sp], #16
+    ldp   x12, x13, [sp], #16
+    ldp   x10, x11, [sp], #16
+    ldp   x8,  x9,  [sp], #16
+    ldp   x6,  x7,  [sp], #16
+    ldp   x4,  x5,  [sp], #16
+    ldp   x2,  x3,  [sp], #16
+    ldp   x0,  x1,  [sp], #16
     eret
+.balign 128
+    b hang
+.balign 128
+    b hang
 
-    // IRQ
-    .align  7
-    kernel_entry
-    bl      handle_irq
-    kernel_exit
+.balign 128
+    b hang
+.balign 128
+    b hang
+.balign 128
+    b hang
+.balign 128
+    b hang
+    
+.balign 128
+    b hang
+.balign 128
+    b hang
+.balign 128
+    b hang
+.balign 128
+    b hang
 
-    // FIQ
-    .align  7
-    mov     x0, #2
-    mrs     x1, esr_el1
-    mrs     x2, elr_el1
-    mrs     x3, spsr_el1
-    mrs     x4, far_el1
-    b       exc_handler
-
-    // SError
-    .align  7
-    mov     x0, #3
-    mrs     x1, esr_el1
-    mrs     x2, elr_el1
-    mrs     x3, spsr_el1
-    mrs     x4, far_el1
-    b       exc_handler
-
-
-exc_handler:
-    ret

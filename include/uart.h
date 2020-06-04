@@ -27,6 +27,7 @@
 #define _UART_H
 
 #include "gpio.h"
+#include "typedef.h"
 
 /* PL011 UART registers */
 #define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
@@ -39,6 +40,11 @@
 #define UART0_MIS       ((volatile unsigned int*)(MMIO_BASE+0x00201040))
 #define UART0_ICR       ((volatile unsigned int*)(MMIO_BASE+0x00201044))
 
+#define IRQ_BASIC   ((volatile uint32_t *)(0x3F00B200))
+#define IRQ_PEND2   ((volatile uint32_t *)(0x3F00B208))
+#define IRQ_ENABLE2 ((volatile uint32_t *)(0x3F00B214))
+#define GPU_INTERRUPTS_ROUTING ((volatile uint32_t *)(0x4000000C))
+#define CORE0_INTERRUPT_SOURCE ((volatile uint32_t *)(0x40000060))
 
 
 void uart_init();
